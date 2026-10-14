@@ -58,7 +58,35 @@ function calculateCartSubtotal(cart) {
 
 }
 
-function calculateOrderTotal() { return notImplemented(); }
+function calculateOrderTotal(cart, promoCode) {
+  const DELIVERY_PRICE = 30000;
+  const FREE_DELIVERY_THRESHOLD = 50000;
+  const DISCOUNT_PERCENT = 0.1;
+  const PRICE_THRESHOLD = 20000;
+  let subtotalWithDiscount = 0;
+  let discount = 0;
+
+  const subtotal = calculateCartSubtotal(cart);
+
+  // Применяем скидку если промокод 'SAVE10' и сумма товара больше порога
+  if (promoCode === 'SAVE10' && subtotal > PRICE_THRESHOLD) {
+    subtotalWithDiscount = subtotal - subtotal * DISCOUNT_PERCENT;
+    discount = subtotal * DISCOUNT_PERCENT;
+  } else {
+    subtotalWithDiscount = subtotal;
+  }
+
+  const delivery = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_PRICE;
+
+  const total = subtotalWithDiscount + delivery;
+
+  return {
+    subtotal,
+    discount,
+    delivery,
+    total
+  };
+}
 
 const cartApi = { addToCart, changeQuantity, removeFromCart, calculateCartSubtotal, calculateOrderTotal };
 
